@@ -14,31 +14,24 @@ headers = {
 def main():
 
     item_dict, failed_items = load_mapping_data()
-    print(item_dict[4405])  # just to spot check.
+    # print(item_dict[4405])  # just to spot check.
 
-    # response = requests.get(latest_url, headers=headers)
+    response = requests.get(latest_url, headers=headers)
     # # print(response.text)
-    #
-    # data = json.loads(response.text)
-    # for item_id in data['data']:
-    #     # print(item_id)
-    #     # print(data['data'][str(item_id)])
-    #     # print(mapping_data[item_id])
-    #     pass
 
-    # item_stats = data['data'][str(item_id)]
-    # high_price = item_stats['high']
-    # high_time = item_stats['highTime']
-    # low_price = item_stats['low']
-    # low_time = item_stats['lowTime']
+    data = json.loads(response.text)
+    for item_id_str in data['data']:
+        # def a better way, but this is laziness
+        item_id_int = int(item_id_str)
 
-    # get GE limit
+        if item_id_int in item_dict:
+            item_dict[item_id_int].high_time = data['data'][item_id_str]['highTime']
+            item_dict[item_id_int].low_time = data['data'][item_id_str]['lowTime']
+            item_dict[item_id_int].high_price = data['data'][item_id_str]['high']
+            item_dict[item_id_int].low_price = data['data'][item_id_str]['low']
+            print(item_dict[item_id_int])
 
-    # print(response.text)
-
-    # print(data['data'])  # probably store this one DB.
-    # for item in data:
-    #     print(item['name'])
+    # now ready to check for any good deals on latest price!
 
     # item_high - item_low = profit_per_item    # todo 1% tax
     # profit_per_item * GE_limit = profit_per_4_hours
